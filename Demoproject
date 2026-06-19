@@ -1,0 +1,141 @@
+1. What @Component Does
+When a class is annotated with @Component, Spring:
+
+Scans the project and finds the class
+
+Creates one object (a bean) of that class
+
+Stores it inside the ApplicationContext
+
+Registers it under its type (e.g., EmailService)
+
+Example:
+
+java
+@Component
+public class EmailService {
+    public void sendEmail(String to) {
+        System.out.println("Sending email to " + to);
+    }
+}
+Spring creates one bean of type EmailService.
+
+2. Declaring a Dependency in Another Class
+Inside another class, we declare:
+
+java
+private final EmailService emailService;
+Meaning:
+
+EmailService → type
+
+emailService → variable name
+
+final → cannot be reassigned after constructor
+
+private → only this class can use it
+
+This is just an empty reference waiting for Spring to fill it.
+
+3. Constructor Injection
+Spring injects dependencies through the constructor:
+
+java
+@Component
+public class UserService {
+
+    private final EmailService emailService;
+
+    @Autowired
+    public UserService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
+    public void registerUser(String email) {
+        System.out.println("User registered");
+        emailService.sendEmail(email);
+    }
+}
+How it works:
+
+Spring sees that UserService needs an EmailService
+
+Spring already created an EmailService bean
+
+Spring calls the constructor:
+
+Code
+new UserService(emailServiceBean)
+Inside the constructor:
+
+Code
+this.emailService = emailService;
+→ The dependency is stored permanently (because of final)
+
+4. Why Constructor Injection Is Preferred
+Guarantees the dependency is provided
+
+Prevents null dependencies
+
+Makes the class immutable
+
+Works perfectly with final
+
+Easier to test
+
+Recommended by Spring
+
+5. ApplicationContext and getBean()
+The main() method is not managed by Spring, so we cannot use @Autowired there.
+
+We must manually request beans from the container:
+
+java
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
+
+        UserService userService = context.getBean(UserService.class);
+        userService.registerUser("shaktihazaru@gmail.com");
+    }
+}
+Flow:
+
+SpringApplication.run()
+→ Starts Spring
+→ Creates all beans
+→ Performs dependency injection
+→ Returns ApplicationContext
+
+context.getBean(UserService.class)  
+→ Fetches the same UserService bean Spring created
+
+userService.registerUser(...)  
+→ Uses the injected EmailService to send email
+
+6. Full Flow Summary
+@Component → Spring creates beans
+
+Spring injects dependencies via constructor
+
+Beans are stored in ApplicationContext
+
+In main(), we manually fetch beans using getBean()
+
+Methods like registerUser() use injected dependencies
+
+7. Key Takeaways
+Spring injects by type, not by variable name
+
+EmailService = type
+
+emailService = variable
+
+final ensures immutability
+
+Constructor injection is the cleanest and safest
+
+ApplicationContext holds all beans, but you must ask for them in main()
+
