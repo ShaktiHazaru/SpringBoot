@@ -1,0 +1,101 @@
+📘 Spring Boot – Simple Web Controller Project
+This is a small Spring Boot project demonstrating how a Controller works inside a Spring Boot application and how component scanning detects classes inside sub‑packages.
+
+🏗️ Project Structure
+Code
+src/main/java/com/shaktihazaru/www
+│
+├── SampleWebApplication.java   ← Main Spring Boot class
+│
+└── controller
+    └── HomeController.java     ← Handles /msg endpoint
+🚀 How the Application Starts
+Spring Boot applications always start from the class annotated with:
+
+SpringBootApplication
+
+A main() method
+
+In this project, that class is:
+
+Code
+com.shaktihazaru.www.SampleWebApplication
+This class:
+
+Starts the Spring Boot framework
+
+Starts the embedded Tomcat server
+
+Performs component scanning
+
+Loads all controllers, services, repositories
+
+You cannot run a controller directly because controllers do not contain a main() method or server startup logic.
+
+🧩 Component Scanning (Why Your Controller Works)
+Spring Boot automatically scans all sub‑packages under the package where the main class is located.
+
+Main class package:
+
+Code
+com.shaktihazaru.www
+Controller package:
+
+Code
+com.shaktihazaru.www.controller
+Since controller is a child package, Spring Boot automatically detects HomeController.
+
+🧭 HomeController Explained
+java
+@RestController
+public class HomeController {
+
+    @RequestMapping("/msg")
+    public String message() {
+        return "Krishna is the Supreme Personality of Godhead";
+    }
+}
+✔ @RestController
+Tells Spring this class handles web requests and returns data directly.
+
+✔ @RequestMapping("/msg")
+Maps the URL /msg to the message() method.
+
+✔ Return value
+Because of @RestController, the returned string becomes the HTTP response body.
+
+🌐 How to Access the Endpoint
+Start the application by running:
+
+Code
+SampleWebApplication
+Then open your browser:
+
+Code
+http://localhost:8080/msg
+You will see:
+
+Code
+Krishna is the Supreme Personality of Godhead
+🧠 Why You Cannot “Run” HomeController
+Controllers are not runnable classes.
+They:
+
+Have no main() method
+
+Do not start the server
+
+Only respond to HTTP requests after the Spring Boot app is running
+
+Only the main class (SampleWebApplication) can start the application.
+
+📌 Summary
+Spring Boot starts from the main class (SampleWebApplication)
+
+Controllers are discovered through component scanning
+
+You cannot run a controller directly
+
+The /msg endpoint works once the app is running
+
+@RestController returns plain text or JSON directly
