@@ -99,3 +99,62 @@ You cannot run a controller directly
 The /msg endpoint works once the app is running
 
 @RestController returns plain text or JSON directly
+
+
+
+
+⭐ LinkedIn Post — Technical Version
+Today I dug into how Spring Boot actually initializes a web application, and one detail stood out clearly:
+
+👉 Only the class annotated with @SpringBootApplication can bootstrap the entire Spring context.
+
+In my project, I added a new controller under:
+
+Code
+com.shaktihazaru.www.controller
+But I noticed something important:
+
+I can run SampleWebApplication
+
+I cannot run HomeController
+
+The /msg endpoint works only after the main class starts
+
+Here’s the technical reason:
+
+🔹 @SpringBootApplication triggers three core mechanisms:
+Component Scanning  
+Scans the package of the main class (com.shaktihazaru.www) and all sub‑packages.
+This is why com.shaktihazaru.www.controller is detected automatically.
+
+Auto‑Configuration  
+Configures Spring MVC, Jackson, Tomcat, and other infrastructure components.
+
+Spring Bootstrapping  
+SpringApplication.run() creates the ApplicationContext, registers beans, and starts the embedded server.
+
+🔹 Why the controller cannot run directly
+A controller is just a Spring bean.
+It has:
+
+No main() method
+
+No server startup logic
+
+No ability to create an ApplicationContext
+
+It only becomes active after the Spring Boot application has been fully initialized.
+
+🔹 Once the app is running
+Spring MVC maps:
+
+Code
+/msg → HomeController.message()
+because the controller was discovered during component scanning.
+
+Takeaway
+Spring Boot’s startup pipeline is centralized.
+The main class is the entry point, the context initializer, and the component scanner.
+Controllers are simply beans that participate in the web layer after the application context is ready.
+
+A small observation — but a foundational part of understanding how Spring Boot works under the hood.
