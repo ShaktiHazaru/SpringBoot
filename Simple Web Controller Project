@@ -48,7 +48,34 @@ Since controller is a child package, Spring Boot automatically detects HomeContr
 🧭 HomeController Explained
 java
 @RestController
+/* @RestController tells Spring:
+
+“This class will handle HTTP requests and return data (JSON, text, etc.) directly.”
+
+It is basically a combination of:
+
+ @Controller 
+
+ @ResponseBody 
+
+Meaning:
+
+You don’t return HTML pages
+
+Whatever your method returns goes directly to the browser
+
+Perfect for APIs
+
+
+⭐ Summary (super simple)
+@RestController → This class returns API responses (JSON/text), not HTML
+
+@RequestMapping("/") → Sets the base URL for all methods in the controller
+
+
+
 public class HomeController {
+*/ 
 
     @RequestMapping("/msg")
     public String message() {
